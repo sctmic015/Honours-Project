@@ -16,7 +16,7 @@ XOR_OUTPUTS = [(0.0,), (1.0,), (1.0,), (0.0,)]
 # Config for FeedForwardNetwork.
 CONFIG = neat.config.Config(neat.genome.DefaultGenome, neat.reproduction.DefaultReproduction,
                             neat.species.DefaultSpeciesSet, neat.stagnation.DefaultStagnation,
-                            'pureples/experiments/xor/config_neat_xor')
+                            'config_neat_xor')
 
 
 def eval_fitness(genomes, config):
@@ -68,6 +68,6 @@ if __name__ == '__main__':
             inputs, expected, output))
 
     # Save net if wished reused and draw it to a file.
-    with open('pureples/experiments/xor/winner_neat_xor.pkl', 'wb') as output:
-        pickle.dump(WINNER_NET, output, pickle.HIGHEST_PROTOCOL)
-    draw_net(WINNER_NET, filename="pureples/experiments/xor/neat_xor_winner")
+    #with open('winner_neat_xor.pkl', 'wb') as output:
+    #    pickle.dump(WINNER_NET, output, pickle.HIGHEST_PROTOCOL)
+    #draw_net(WINNER_NET, filename="neat_xor_winner")

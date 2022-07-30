@@ -26,7 +26,7 @@ SUBSTRATE = Substrate(
 # Config for CPPN.
 CONFIG = neat.config.Config(neat.genome.DefaultGenome, neat.reproduction.DefaultReproduction,
                             neat.species.DefaultSpeciesSet, neat.stagnation.DefaultStagnation,
-                            'pureples/experiments/xor/config_cppn_xor')
+                            'config_cppn_xor')
 
 
 def eval_fitness(genomes, config):
@@ -45,8 +45,10 @@ def eval_fitness(genomes, config):
             net.reset()
 
             for _ in range(ACTIVATIONS):
+                #print(ACTIVATIONS)
                 xor_output = net.activate(new_xor_input)
-
+                print(xor_output)
+            print()
             sum_square_error += ((xor_output[0] - xor_expected[0])**2.0)/4.0
 
         genome.fitness = 1 - sum_square_error
@@ -88,7 +90,7 @@ if __name__ == '__main__':
             inputs, expected, output))
 
     # Save CPPN if wished reused and draw it to file along with the winner.
-    with open('pureples/experiments/xor/hyperneat_xor_cppn.pkl', 'wb') as output:
-        pickle.dump(CPPN, output, pickle.HIGHEST_PROTOCOL)
-    draw_net(CPPN, filename="pureples/experiments/xor/hyperneat_xor_cppn")
-    draw_net(WINNER_NET, filename="pureples/experiments/xor/hyperneat_xor_winner")
+    #with open('pureples/experiments/xor/hyperneat_xor_cppn.pkl', 'wb') as output:
+    #    pickle.dump(CPPN, output, pickle.HIGHEST_PROTOCOL)
+    #draw_net(CPPN, filename="pureples/experiments/xor/hyperneat_xor_cppn")
+    #draw_net(WINNER_NET, filename="pureples/experiments/xor/hyperneat_xor_winner")
