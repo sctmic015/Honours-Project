@@ -3,10 +3,9 @@ Varying visualisation tools.
 """
 
 import pickle
+import os
 import graphviz
 import matplotlib.pyplot as plt
-import os
-os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz2.38/bin/'
 
 
 def draw_net(net, filename=None, node_names={}, node_colors={}):

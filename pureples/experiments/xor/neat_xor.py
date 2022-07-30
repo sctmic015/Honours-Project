@@ -36,6 +36,18 @@ def eval_fitness(genomes, config):
 
         genome.fitness = 1 - sum_square_error
 
+def eval_fitness_parallel(genome, config):
+    net = neat.nn.FeedForwardNetwork.create(genome, config)
+
+    sum_square_error = 0.0
+
+    for xor_inputs, xor_expected in zip(XOR_INPUTS, XOR_OUTPUTS):
+        new_xor_input = xor_inputs + (1.0,)
+        xor_output = net.activate(new_xor_input)
+        sum_square_error += ((xor_output[0] - xor_expected[0]) ** 2.0) / 4.0
+
+    return 1 - sum_square_error
+
 
 def run(gens):
     """
@@ -47,7 +59,8 @@ def run(gens):
     pop.add_reporter(stats)
     pop.add_reporter(neat.reporting.StdOutReporter(True))
 
-    winner = pop.run(eval_fitness, gens)
+    pe = neat.ThreadedEvaluator(4, eval_fitness_parallel)
+    winner = pop.run(pe.evaluate, gens)
     print("neat_xor done")
     return winner, stats
 
@@ -68,6 +81,6 @@ if __name__ == '__main__':
             inputs, expected, output))
 
     # Save net if wished reused and draw it to a file.
-    #with open('winner_neat_xor.pkl', 'wb') as output:
-    #    pickle.dump(WINNER_NET, output, pickle.HIGHEST_PROTOCOL)
-    #draw_net(WINNER_NET, filename="neat_xor_winner")
+    with open('winner_neat_xor.pkl', 'wb') as output:
+        pickle.dump(WINNER_NET, output, pickle.HIGHEST_PROTOCOL)
+    draw_net(WINNER_NET, filename="neat_xor_winner")

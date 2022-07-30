@@ -9,6 +9,7 @@ import neat
 import neat.nn
 import numpy as np
 
+
 from hexapod.controllers.testingHyperNEAT import Controller, tripod_gait
 from hexapod.simulator import Simulator
 from pureples.hyperneat import create_phenotype_network
@@ -45,6 +46,33 @@ def evaluate_gait(genomes, config, duration=5):
         # Assign fitness to genome
         genome.fitness = fitness
 
+def evaluate_gait_parallel(genome, config, duration = 5):
+    cppn = neat.nn.FeedForwardNetwork.create(genome, config)
+    # Create ANN from CPPN and Substrate
+    net = create_phenotype_network(cppn, SUBSTRATE)
+    # Reset net
+    net.reset()
+    leg_params = np.array(tripod_gait).reshape(6, 5)
+    # Set up controller
+    try:
+        controller = Controller(leg_params, body_height=0.15, velocity=0.9, period=1.0, crab_angle=-np.pi / 6,
+                                ann=net)
+    except:
+        return 0, np.zeros(6)
+    # Initialise Simulator
+    simulator = Simulator(controller=controller, visualiser=False, collision_fatal=True)
+    # Step in simulator
+    for t in np.arange(0, duration, step=simulator.dt):
+        try:
+            simulator.step()
+        except RuntimeError as collision:
+            fitness = 0, np.zeros(6)
+    fitness = simulator.base_pos()[0]  # distance travelled along x axis
+    # Terminate Simulator
+    simulator.terminate()
+    # Assign fitness to genome
+    return fitness
+
 
 # Configure network
 input_coordinates = [(-0.6, 0.5), (-0.4, 0.5), (-0.2, 0.5), (0.2, 0.5), (0.4, 0.5), (0.6, 0.5),
@@ -80,7 +108,8 @@ def run(gens):
     pop.add_reporter(stats)
     pop.add_reporter(neat.reporting.StdOutReporter(True))
 
-    winner = pop.run(evaluate_gait, gens)
+    pe = neat.parallel.ParallelEvaluator(4, evaluate_gait_parallel)
+    winner = pop.run(pe.evaluate, gens)
     print("done")
     return winner, stats
 
@@ -101,5 +130,12 @@ if __name__ == '__main__':
                             printangles=True)
     simulator = Simulator(controller, follow=True, visualiser=True, collision_fatal=False, failed_legs=[0])
 
+    with open('hyperneat_xor_cppn.pkl', 'wb') as output:
+        pickle.dump(CPPN, output, pickle.HIGHEST_PROTOCOL)
+    draw_net(CPPN, filename="hyperneat_xor_cppn")
+    draw_net(WINNER_NET, filename="hyperneat_xor_winner")
+
     while True:
         simulator.step()
+
+
