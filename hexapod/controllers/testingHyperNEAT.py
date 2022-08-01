@@ -96,8 +96,6 @@ class Controller:
             else:
                 current_angles[i] = (current_angles[i] * 5.23599) - (5.23599 / 2)
 
-        print(current_angles)
-
         # Set the current angle of controller which will be the input for the next time step
         self.current_angle = current_angles
         # Return current angles for Hexapods next movement
