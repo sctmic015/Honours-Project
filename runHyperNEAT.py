@@ -8,6 +8,7 @@ import pickle
 import neat
 import neat.nn
 import numpy as np
+import multiprocessing
 
 
 from hexapod.controllers.testingHyperNEAT import Controller, tripod_gait, stationary
@@ -108,7 +109,7 @@ def run(gens):
     pop.add_reporter(stats)
     pop.add_reporter(neat.reporting.StdOutReporter(True))
 
-    pe = neat.parallel.ParallelEvaluator(4, evaluate_gait_parallel)
+    pe = neat.parallel.ParallelEvaluator(multiprocessing.cpu_count(), evaluate_gait_parallel)
     winner = pop.run(pe.evaluate, gens)
     print("done")
     return winner, stats
