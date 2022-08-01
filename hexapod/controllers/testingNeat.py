@@ -84,11 +84,11 @@ class Controller:
         # Current theory is that the for loop makes the program to slow to do NEAT
         for i in range(len(current_angles)):
             if i % 3 == 0:
-                current_angles[i] = (current_angles[i] * 1.5708) - (1.5708 / 2)
+                current_angles[i] = (current_angles[i] * 3.49066) - (3.49066 / 2)
             elif i % 3 == 1:
-                current_angles[i] = current_angles[i] * 0.63
+                current_angles[i] = (current_angles[i] * 4.88692) - (4.88692 / 2)
             else:
-                current_angles[i] = current_angles[i] * 0.7 - 2.095
+                current_angles[i] = (current_angles[i] * 5.23599) - (5.23599 / 2)
 
         self.current_angle = current_angles
 

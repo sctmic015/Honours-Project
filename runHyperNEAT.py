@@ -10,7 +10,7 @@ import neat.nn
 import numpy as np
 
 
-from hexapod.controllers.testingHyperNEAT import Controller, tripod_gait
+from hexapod.controllers.testingHyperNEAT import Controller, tripod_gait, stationary
 from hexapod.simulator import Simulator
 from pureples.hyperneat import create_phenotype_network
 from pureples.shared import Substrate, run_hyper
@@ -25,7 +25,7 @@ def evaluate_gait(genomes, config, duration=5):
         net = create_phenotype_network(cppn, SUBSTRATE)
         # Reset net
         net.reset()
-        leg_params = np.array(tripod_gait).reshape(6, 5)
+        leg_params = np.array(stationary).reshape(6, 5)
         # Set up controller
         try:
             controller = Controller(leg_params, body_height=0.15, velocity=0.9, period=1.0, crab_angle=-np.pi / 6,
@@ -52,7 +52,7 @@ def evaluate_gait_parallel(genome, config, duration = 5):
     net = create_phenotype_network(cppn, SUBSTRATE)
     # Reset net
     net.reset()
-    leg_params = np.array(tripod_gait).reshape(6, 5)
+    leg_params = np.array(stationary).reshape(6, 5)
     # Set up controller
     try:
         controller = Controller(leg_params, body_height=0.15, velocity=0.9, period=1.0, crab_angle=-np.pi / 6,
@@ -115,13 +115,15 @@ def run(gens):
 
 
 if __name__ == '__main__':
-    WINNER = run(1000)[0]  # Only relevant to look at the winner.
+    WINNER = run(5)[0]  # Only relevant to look at the winner.
     print("This is the winner!!!")
     print(type(WINNER))
     print('\nBest genome:\n{!s}'.format(WINNER))
 
     # CPPN for winner
     CPPN = neat.nn.FeedForwardNetwork.create(WINNER, CONFIG)
+    #with open("1000evals.pkl", 'rb') as f:
+    #    CPPN = pickle.load(f)
     ## ANN for winner
     WINNER_NET = create_phenotype_network(CPPN, SUBSTRATE)
 

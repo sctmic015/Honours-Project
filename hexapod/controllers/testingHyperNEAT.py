@@ -30,7 +30,7 @@ stationary = [0.18, 0, 0, 0, 0] * 6
 
 class Controller:
 
-    def __init__(self, params=tripod_gait, crab_angle=0.0, body_height=0.14, period=1.0, velocity=0.1, dt=1 / 240, ann = None, printangles = False):
+    def __init__(self, params=stationary, crab_angle=0.0, body_height=0.14, period=1.0, velocity=0.1, dt=1 / 240, ann = None, printangles = False):
         # link lengths
         self.ann = ann
         self.l_1 = 0.05317
@@ -73,6 +73,7 @@ class Controller:
             self.speeds = np.append(self.speeds, joint_speeds, axis=0)
 
         initial_angle = self.angles[:, 0]
+        #print(initial_angle)
         self.current_angle = initial_angle
 
     def joint_angles(self, t):
@@ -89,11 +90,13 @@ class Controller:
         # Scale the current angles from 0 and 1 to required angular ranges
         for i in range(len(current_angles)):
             if i % 3 == 0:
-                current_angles[i] = ((current_angles[i] * 1.5708) - (1.5708 / 2))
+                current_angles[i] = (current_angles[i] * 3.49066) - (3.49066 / 2)
             elif i % 3 == 1:
-                current_angles[i] = (current_angles[i] * 0.63)
+                current_angles[i] = (current_angles[i] * 4.88692) - (4.88692 / 2)
             else:
-                current_angles[i] = (current_angles[i] * 0.7 - 2.095)
+                current_angles[i] = (current_angles[i] * 5.23599) - (5.23599 / 2)
+
+        print(current_angles)
 
         # Set the current angle of controller which will be the input for the next time step
         self.current_angle = current_angles

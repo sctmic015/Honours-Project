@@ -5,7 +5,7 @@ All Hyperneat related logic resides here.
 import neat
 
 
-def create_phenotype_network(cppn, substrate, activation_function="sigmoid"):
+def create_phenotype_network(cppn, substrate, activation_function="tanh"):
     """
     Creates a recurrent network using a cppn and a substrate.
     """
